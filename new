@@ -1,6 +1,6 @@
 import arabic_reshaper
 from bidi.algorithm import get_display
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_RIGHT
 from reportlab.pdfbase import pdfmetrics
@@ -8,10 +8,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib import colors
 import qrcode
 
-# إعداد ملف PDF
-doc = SimpleDocTemplate("cv_with_qr_email.pdf", rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=60)
-
-# تسجيل خط عربي (نزّل خط Amiri أو أي خط عربي وحطه بنفس المجلد)
+# تسجيل الخط العربي
 pdfmetrics.registerFont(TTFont("Amiri", "Amiri-Regular.ttf"))
 
 # دالة تجهيز النص العربي
@@ -20,18 +17,14 @@ def ar_text(text):
     return get_display(reshaped)
 
 # أنماط النصوص
-style_title = ParagraphStyle(
-    name="Title", fontName="Amiri", fontSize=18, alignment=TA_RIGHT,
-    textColor=colors.HexColor("#0D47A1"), spaceAfter=14, leading=22
-)
-style_section = ParagraphStyle(
-    name="Section", fontName="Amiri", fontSize=13, alignment=TA_RIGHT,
-    textColor=colors.HexColor("#1565C0"), spaceAfter=8, leading=18
-)
-style_normal = ParagraphStyle(
-    name="Normal", fontName="Amiri", fontSize=11, alignment=TA_RIGHT,
-    textColor=colors.black, leading=16
-)
+style_title = ParagraphStyle(name="Title", fontName="Amiri", fontSize=18,
+                             alignment=TA_RIGHT, textColor=colors.HexColor("#0D47A1"),
+                             spaceAfter=14, leading=22)
+style_section = ParagraphStyle(name="Section", fontName="Amiri", fontSize=13,
+                               alignment=TA_RIGHT, textColor=colors.HexColor("#1565C0"),
+                               spaceAfter=6, leading=18)
+style_normal = ParagraphStyle(name="Normal", fontName="Amiri", fontSize=11,
+                              alignment=TA_RIGHT, textColor=colors.black, leading=16)
 
 # إنشاء باركود QR للإيميل
 qr_data = "mailto:Mohammed.a.hakami@gmail.com"
@@ -39,20 +32,49 @@ qr_img = qrcode.make(qr_data)
 qr_path = "qr_email.png"
 qr_img.save(qr_path)
 
-# المحتوى الأساسي
-content = []
-content.append(Paragraph(ar_text("محمد عبدالرحمن حكمي"), style_title))
-content.append(Paragraph(ar_text("إداري وتنفيذي يتمتع بخبرة واسعة ومتنوعة في الإدارة العامة، إدارة الفروع والمناطق، والتطوير."), style_normal))
-content.append(Spacer(1, 12))
+# العمود الأيسر (معلومات شخصية + مهارات + باركود)
+left_column = []
+left_column.append(Paragraph(ar_text("📞 0599515695"), style_normal))
+left_column.append(Paragraph(ar_text("✉ Mohammed.a.hakami@gmail.com"), style_normal))
+left_column.append(Paragraph(ar_text("📍 السعودية"), style_normal))
+left_column.append(Spacer(1, 12))
 
-content.append(Paragraph(ar_text("🎯 الهدف المهني"), style_section))
-content.append(Paragraph(ar_text("الانضمام إلى مؤسسات أو شركات رائدة أُسهم فيها بخبراتي في القيادة والإدارة لتطوير الأداء وتحقيق الأهداف الاستراتيجية."), style_normal))
-content.append(Spacer(1, 12))
+left_column.append(Paragraph(ar_text("🛠️ المهارات"), style_section))
+skills = [
+    "القيادة وإدارة الفرق",
+    "الاستشارات الإدارية",
+    "صياغة الاستراتيجيات",
+    "التخطيط والتنظيم",
+    "إدارة الجودة",
+    "التواصل الفعال",
+    "العمل تحت الضغط",
+    "حل المشكلات",
+    "الحاسب الآلي"
+]
+for skill in skills:
+    left_column.append(Paragraph(ar_text("• " + skill), style_normal))
+left_column.append(Spacer(1, 12))
 
-# إضافة باركود أسفل الصفحة
-qr_code_img = Image(qr_path, width=80, height=80)
-content.append(Spacer(1, 100))
-content.append(qr_code_img)
+left_column.append(Paragraph(ar_text("📚 الدورات"), style_section))
+left_column.append(Paragraph(ar_text("الحاسب الآلي، القيادة، الإدارة العامة، إدارة المخاطر، الاقتصاد، التسويق، المبيعات، المشتريات، تطوير الذات، إدارة الوقت، إدارة المشاريع."), style_normal))
+left_column.append(Spacer(1, 12))
 
-# بناء الملف
-doc.build(content)
+left_column.append(Paragraph(ar_text("🌐 اللغات"), style_section))
+left_column.append(Paragraph(ar_text("العربية: اللغة الأم"), style_normal))
+left_column.append(Paragraph(ar_text("الإنجليزية: مستوى جيد"), style_normal))
+left_column.append(Spacer(1, 30))
+
+left_column.append(Image(qr_path, width=100, height=100))
+
+# العمود الأيمن (المحتوى الأساسي)
+right_column = []
+right_column.append(Paragraph(ar_text("محمد عبدالرحمن حكمي"), style_title))
+right_column.append(Paragraph(ar_text("إداري وتنفيذي يتمتع بخبرة واسعة ومتنوعة في الإدارة العامة، إدارة الفروع والمناطق، والتطوير."), style_normal))
+right_column.append(Spacer(1, 12))
+
+right_column.append(Paragraph(ar_text("🎯 الهدف المهني"), style_section))
+right_column.append(Paragraph(ar_text("الانضمام إلى مؤسسات أو شركات رائدة أُسهم فيها بخبراتي في القيادة والإدارة لتطوير الأداء وتحقيق الأهداف الاستراتيجية، عبر تعزيز الكفاءة التشغيلية، ورفع مستويات الجودة والإنتاجية، وخلق قيمة مضافة مستدامة تدعم النجاح والتطور."), style_normal))
+right_column.append(Spacer(1, 12))
+
+right_column.append(Paragraph(ar_text("💼 الخبرات العملية"), style_section))
+experiences = [
