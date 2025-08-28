@@ -1,199 +1,58 @@
-# cv<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>محمد عبدالرحمن حكمي - السيرة الذاتية</title>
-<style>
-body {
-    font-family: 'Tahoma', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    direction: rtl;
-}
-.container {
-    max-width: 900px;
-    margin: 40px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-h1, h2 {
-    color: #2c3e50;
-}
-h1 {
-    font-size: 32px;
-    margin-bottom: 5px;
-    text-align: center;
-}
-h2 {
-    margin-top: 30px;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 5px;
-}
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-li {
-    margin-bottom: 10px;
-}
-.section {
-    margin-bottom: 30px;
-}
-.contact {
-    background-color: #2c3e50;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    border-radius: 0 0 10px 10px;
-}
-.contact a {
-    color: #f1c40f;
-    text-decoration: none;
-}
-.subscribe {
-    text-align: center;
-    margin: 20px 0;
-    padding: 15px;
-    background-color: #f1c40f;
-    color: #2c3e50;
-    font-weight: bold;
-    border-radius: 10px;
-}
-.subscribe a {
-    color: #2c3e50;
-    text-decoration: none;
-}
-.skill, .language {
-    background-color: #3498db;
-    color: white;
-    display: inline-block;
-    padding: 5px 12px;
-    margin: 5px 5px 5px 0;
-    border-radius: 20px;
-    font-size: 14px;
-}
-.job ul {
-    margin-top: 5px;
-    padding-left: 20px;
-}
-</style>
-</head>
-<body>
-<div class="container">
-    <h1>محمد عبدالرحمن حكمي</h1>
-    <p style="text-align:center;"><strong>الموقع:</strong> السعودية</p>
+import arabic_reshaper
+from bidi.algorithm import get_display
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.enums import TA_RIGHT
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib import colors
+import qrcode
 
-    <div class="section">
-        <h2>الهدف المهني</h2>
-        <p>أسعى للحصول على وظيفة أستثمر فيها خبراتي المتنوعة في الإدارة، المبيعات، تحليل البيانات، وخدمة العملاء، والمساهمة في تحقيق أهداف الجهة التي أنتمي إليها.</p>
-    </div>
+# إعداد ملف PDF
+doc = SimpleDocTemplate("cv_with_qr_email.pdf", rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=60)
 
-    <div class="section">
-        <h2>الخبرات العملية</h2>
-        <div class="job">
-            <strong>مؤسسة (سنتين)</strong>
-            <ul>
-                <li>تحليل بيانات</li>
-                <li>مشرف مشتريات، مشرف مبيعات، مشرف تسويق، مشرف تطوير</li>
-                <li>إعداد الاستراتيجيات وتحسين الأداء</li>
-            </ul>
-        </div>
-        <div class="job">
-            <strong>شركة (سنة)</strong>
-            <ul>
-                <li>مقدم طعام، مشرف صالة</li>
-                <li>تقييم جودة الخدمات</li>
-            </ul>
-        </div>
-        <div class="job">
-            <strong>شركة موسمية</strong>
-            <ul>
-                <li>تنظيم مناطق الانتظار والحشود</li>
-                <li>مشرف مجموعة</li>
-            </ul>
-        </div>
-        <div class="job">
-            <strong>شركة (6 أشهر)</strong>
-            <ul>
-                <li>كول سنتر</li>
-            </ul>
-        </div>
-        <div class="job">
-            <strong>مؤسسة (سنة ونصف)</strong>
-            <ul>
-                <li>كاشير وإدارة فريق</li>
-                <li>إدارة جودة وعمليات الفرع</li>
-            </ul>
-        </div>
-        <div class="job">
-            <strong>شركة موسمية</strong>
-            <ul>
-                <li>تموين إسكان وخدمات أمن</li>
-            </ul>
-        </div>
-        <div class="job">
-            <strong>شركة (6 أشهر)</strong>
-            <ul>
-                <li>سكرتير مدير شركة، ترتيب ملفات، إدخال بيانات، إجراء معاملات</li>
-            </ul>
-        </div>
-        <div class="job">
-            <strong>شركة (6 أشهر)</strong>
-            <ul>
-                <li>استقبال، مبيعات، تقييم جودة، نائب مدير فرع</li>
-            </ul>
-        </div>
-    </div>
+# تسجيل خط عربي (نزّل خط Amiri أو أي خط عربي وحطه بنفس المجلد)
+pdfmetrics.registerFont(TTFont("Amiri", "Amiri-Regular.ttf"))
 
-    <div class="section">
-        <h2>المهارات</h2>
-        <div>
-            <span class="skill">العمل ضمن فريق</span>
-            <span class="skill">القيادة</span>
-            <span class="skill">التخطيط والتنظيم</span>
-            <span class="skill">مهارات التواصل</span>
-            <span class="skill">تحمل ضغط العمل</span>
-            <span class="skill">حل المشكلات</span>
-            <span class="skill">استخدام الحاسب الآلي</span>
-        </div>
-    </div>
+# دالة تجهيز النص العربي
+def ar_text(text):
+    reshaped = arabic_reshaper.reshape(text)
+    return get_display(reshaped)
 
-    <div class="section">
-        <h2>الدورات التدريبية</h2>
-        <ul>
-            <li>الحاسب الآلي</li>
-            <li>القيادة</li>
-            <li>الإدارة العامة</li>
-            <li>إدارة المخاطر</li>
-            <li>الاقتصاد</li>
-            <li>التسويق</li>
-            <li>المبيعات</li>
-            <li>المشتريات</li>
-            <li>تطوير الذات</li>
-        </ul>
-    </div>
+# أنماط النصوص
+style_title = ParagraphStyle(
+    name="Title", fontName="Amiri", fontSize=18, alignment=TA_RIGHT,
+    textColor=colors.HexColor("#0D47A1"), spaceAfter=14, leading=22
+)
+style_section = ParagraphStyle(
+    name="Section", fontName="Amiri", fontSize=13, alignment=TA_RIGHT,
+    textColor=colors.HexColor("#1565C0"), spaceAfter=8, leading=18
+)
+style_normal = ParagraphStyle(
+    name="Normal", fontName="Amiri", fontSize=11, alignment=TA_RIGHT,
+    textColor=colors.black, leading=16
+)
 
-    <div class="section">
-        <h2>اللغات</h2>
-        <div>
-            <span class="language">العربية – اللغة الأم</span>
-            <span class="language">الإنجليزية – جيد</span>
-        </div>
-    </div>
+# إنشاء باركود QR للإيميل
+qr_data = "mailto:Mohammed.a.hakami@gmail.com"
+qr_img = qrcode.make(qr_data)
+qr_path = "qr_email.png"
+qr_img.save(qr_path)
 
-    <div class="subscribe">
-        📢 إذا أعجبتك السيرة، لا تنسَ <a href="رابط_القناة_هنا" target="_blank">الاشتراك في القناة</a>!
-    </div>
-</div>
+# المحتوى الأساسي
+content = []
+content.append(Paragraph(ar_text("محمد عبدالرحمن حكمي"), style_title))
+content.append(Paragraph(ar_text("إداري وتنفيذي يتمتع بخبرة واسعة ومتنوعة في الإدارة العامة، إدارة الفروع والمناطق، والتطوير."), style_normal))
+content.append(Spacer(1, 12))
 
-<div class="contact">
-    <p>📞 0599515695 | ✉ <a href="mailto:Mohammed.a.hakami@gmail.com">Mohammed.a.hakami@gmail.com</a></p>
-    <p>السعودية</p>
-</div>
-</body>
-</html>
+content.append(Paragraph(ar_text("🎯 الهدف المهني"), style_section))
+content.append(Paragraph(ar_text("الانضمام إلى مؤسسات أو شركات رائدة أُسهم فيها بخبراتي في القيادة والإدارة لتطوير الأداء وتحقيق الأهداف الاستراتيجية."), style_normal))
+content.append(Spacer(1, 12))
+
+# إضافة باركود أسفل الصفحة
+qr_code_img = Image(qr_path, width=80, height=80)
+content.append(Spacer(1, 100))
+content.append(qr_code_img)
+
+# بناء الملف
+doc.build(content)
